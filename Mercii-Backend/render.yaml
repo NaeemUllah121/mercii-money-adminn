@@ -1,0 +1,41 @@
+services:
+  - type: web
+    name: mercii-backend
+    env: node
+    region: oregon
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+      - key: DB_HOST
+        fromDatabase:
+          name: mercii-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: mercii-db
+          property: port
+      - key: DB_NAME
+        fromDatabase:
+          name: mercii-db
+          property: database
+      - key: DB_USER
+        fromDatabase:
+          name: mercii-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: mercii-db
+          property: password
+      - key: DB_DIALECT
+        value: postgres
+
+databases:
+  - name: mercii-db
+    databaseName: mercii_db
+    user: mercii_user
+    plan: free

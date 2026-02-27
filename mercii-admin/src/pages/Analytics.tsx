@@ -2,8 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { overviewAPI } from '../services/api';
 import { Loader2 } from 'lucide-react';
 import {
-  AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  BarChart, Bar, PieChart, Pie, Cell, Legend
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend
 } from 'recharts';
 
 const COLORS = ['#3b82f6', '#22c55e', '#eab308', '#ef4444', '#8b5cf6'];
@@ -14,6 +13,7 @@ const Analytics: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [timeframe, setTimeframe] = useState('24h');
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => { fetchData(); }, [timeframe]);
 
   const fetchData = async () => {

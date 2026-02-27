@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, Search, Bell, Globe, User, Eye, Loader2 } from 'lucide-react';
+import { Menu, Search, Bell, Globe, Eye, Loader2 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import { notificationsAPI, customerAPI, transactionAPI } from '../services/api';
@@ -56,6 +56,7 @@ const TopBar: React.FC<TopBarProps> = ({ onMenuToggle, pageTitle }) => {
   };
 
   // Filter languages based on search query
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     const filtered = languages.filter(lang => 
       lang.name.toLowerCase().includes(languageSearchQuery.toLowerCase()) ||

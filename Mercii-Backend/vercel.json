@@ -8,10 +8,5 @@
   ],
   "env": {
     "NODE_ENV": "production"
-  },
-  "functions": {
-    "src/bin/www.js": {
-      "maxDuration": 30
-    }
   }
 }

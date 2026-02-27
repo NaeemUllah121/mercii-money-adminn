@@ -36,12 +36,11 @@ const Customers: React.FC = () => {
   // Check if user has access to customer management
   const hasCustomerAccess = user?.role === 'admin' || user?.role === 'support';
 
-  // eslint-disabl
-  // e-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (hasCustomerAccess) {
       fetchCustomers();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, statusFilter, kycFilter, hasCustomerAccess]);
 
   // If MLRO role, show access denied message

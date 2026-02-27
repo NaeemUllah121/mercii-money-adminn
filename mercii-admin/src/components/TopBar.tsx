@@ -2,12 +2,26 @@ import React, { useState, useEffect } from 'react';
 import { Menu, Search, Bell, Globe, Eye, Loader2 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
-import { notificationsAPI, customerAPI, transactionAPI } from '../services/api';
+import { notificationsAPI } from '../services/api';
 
 interface TopBarProps {
   onMenuToggle: () => void;
   pageTitle: string;
 }
+
+const languages = [
+    { code: 'EN', name: 'English', flag: '🇬🇧' },
+    { code: 'ES', name: 'Spanish', flag: '🇪🇸' },
+    { code: 'FR', name: 'French', flag: '🇫🇷' },
+    { code: 'DE', name: 'German', flag: '🇩🇪' },
+    { code: 'IT', name: 'Italian', flag: '🇮🇹' },
+    { code: 'PT', name: 'Portuguese', flag: '🇵🇹' },
+    { code: 'HI', name: 'Hindi', flag: '🇮🇳' },
+    { code: 'AR', name: 'Arabic', flag: '🇸🇦' },
+    { code: 'ZH', name: 'Chinese', flag: '🇨🇳' },
+    { code: 'JA', name: 'Japanese', flag: '🇯🇵' },
+  { code: 'RU', name: 'Russian', flag: '🇷🇺' },
+];
 
 const TopBar: React.FC<TopBarProps> = ({ onMenuToggle, pageTitle }) => {
   const { user } = useAuth();
@@ -22,22 +36,7 @@ const TopBar: React.FC<TopBarProps> = ({ onMenuToggle, pageTitle }) => {
   const [languageSearchQuery, setLanguageSearchQuery] = useState('');
   const [filteredLanguages, setFilteredLanguages] = useState<any[]>([]);
 
-  const languages = [
-    { code: 'EN', name: 'English', flag: '🇬🇧' },
-    { code: 'ES', name: 'Spanish', flag: '🇪🇸' },
-    { code: 'FR', name: 'French', flag: '🇫🇷' },
-    { code: 'DE', name: 'German', flag: '🇩🇪' },
-    { code: 'IT', name: 'Italian', flag: '🇮🇹' },
-    { code: 'PT', name: 'Portuguese', flag: '🇵🇹' },
-    { code: 'HI', name: 'Hindi', flag: '🇮🇳' },
-    { code: 'AR', name: 'Arabic', flag: '🇸🇦' },
-    { code: 'ZH', name: 'Chinese', flag: '🇨🇳' },
-    { code: 'JA', name: 'Japanese', flag: '🇯🇵' },
-    { code: 'RU', name: 'Russian', flag: '🇷🇺' },
-  ];
-
   // Initialize filtered languages
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     setFilteredLanguages(languages);
   }, []);
@@ -58,7 +57,6 @@ const TopBar: React.FC<TopBarProps> = ({ onMenuToggle, pageTitle }) => {
   };
 
   // Filter languages based on search query
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     const filtered = languages.filter(lang => 
       lang.name.toLowerCase().includes(languageSearchQuery.toLowerCase()) ||
@@ -76,31 +74,10 @@ const TopBar: React.FC<TopBarProps> = ({ onMenuToggle, pageTitle }) => {
 
     setIsSearching(true);
     try {
-      // Real API search calls
-      const [customersResponse, transactionsResponse] = await Promise.all([
-        customerAPI.getCustomers({ search: query, limit: 5 }),
-        transactionAPI.getTransactions({ search: query, limit: 5 })
-      ]);
-
-      // const searchResults = [
-      //   ...customersResponse.data.customers?.map((customer: any) => ({
-      //     type: 'customer',
-      //     name: customer.fullName,
-      //     email: customer.email,
-      //     id: customer.id
-      //   })) || [],
-      //   ...transactionsResponse.data.transactions?.map((transaction: any) => ({
-      //     type: 'transaction',
-      //     ref: transaction.referenceNumber,
-      //     amount: `£${transaction.amount}`,
-      //     customer: transaction.customer?.fullName || 'Unknown'
-      //   })) || []
-      // ];
-
-      // setSearchResults(searchResults);
+      // Search functionality disabled for now
+      // TODO: Re-enable when search results display is implemented
     } catch (error) {
       console.error('Search failed:', error);
-      // setSearchResults([]);
     } finally {
       setIsSearching(false);
     }

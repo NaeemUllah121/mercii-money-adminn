@@ -37,11 +37,11 @@ const Compliance: React.FC = () => {
   // Check if user has access to compliance
   const hasComplianceAccess = user?.role === 'admin' || user?.role === 'mlro';
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => { 
     if (hasComplianceAccess) {
       fetchFlags(); 
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, statusFilter, severityFilter, hasComplianceAccess]);
 
   // If Support role, show access denied message

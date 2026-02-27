@@ -27,8 +27,6 @@ const Transactions: React.FC = () => {
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
 
-  useEffect(() => { fetchTransactions(); }, [page, statusFilter]);
-
   const fetchTransactions = async () => {
     setLoading(true);
     try {
@@ -38,6 +36,9 @@ const Transactions: React.FC = () => {
     } catch (err) { console.error(err); }
     finally { setLoading(false); }
   };
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => { fetchTransactions(); }, [page, statusFilter]);
 
   const handleRefund = async (id: string) => {
     setActionLoading(id);

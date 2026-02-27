@@ -1,6 +1,5 @@
 import React from 'react';
-import { FileText, Download, Calendar } from 'lucide-react';
-import { operationsAPI } from '../services/api';
+import { FileText, Download } from 'lucide-react';
 
 const Reports: React.FC = () => {
   const handleDownload = async (reportTitle: string, reportType: string) => {

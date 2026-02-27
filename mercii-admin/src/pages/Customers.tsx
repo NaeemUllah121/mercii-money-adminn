@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { customerAPI } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import {
-  Search, Filter, ChevronLeft, ChevronRight, UserCheck, UserX,
+  Search, ChevronLeft, ChevronRight, UserCheck, UserX,
   RefreshCw, Shield, MoreVertical, Loader2, Eye, AlertTriangle
 } from 'lucide-react';
 
@@ -36,6 +36,7 @@ const Customers: React.FC = () => {
   // Check if user has access to customer management
   const hasCustomerAccess = user?.role === 'admin' || user?.role === 'support';
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (hasCustomerAccess) {
       fetchCustomers();

@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { overviewAPI, integrationResultsAPI } from '../services/api';
-import { useLanguage } from '../context/LanguageContext';
 import {
-  Users, CreditCard, ShieldCheck, AlertTriangle, TrendingUp, TrendingDown,
-  Clock, CheckCircle2, XCircle, FileQuestion, Loader2,
+  AlertTriangle, Clock, CheckCircle2, XCircle, FileQuestion, Loader2,
   ExternalLink, Activity
 } from 'lucide-react';
 import {
@@ -37,14 +35,14 @@ interface ServiceHealth {
   summary: { total: number; healthy: number; warning: number; unhealthy: number };
 }
 
-interface Alert {
-  id: string;
-  type: string;
-  severity: string;
-  title: string;
-  message: string;
-  createdAt: string;
-}
+// interface Alert {
+//   id: string;
+//   type: string;
+//   severity: string;
+//   title: string;
+//   message: string;
+//   createdAt: string;
+// }
 
 const Dashboard: React.FC = () => {
   // const { t } = useLanguage();
@@ -63,7 +61,7 @@ const Dashboard: React.FC = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const [kpisRes, healthRes, alertsRes, serviceRes] = await Promise.all([
+      const [kpisRes, healthRes, , serviceRes] = await Promise.all([
         overviewAPI.getKPIs(),
         overviewAPI.getHealth(),
         overviewAPI.getAlerts(),

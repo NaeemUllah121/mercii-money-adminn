@@ -3,7 +3,7 @@ import { overviewAPI, integrationResultsAPI } from '../services/api';
 import { useLanguage } from '../context/LanguageContext';
 import {
   Users, CreditCard, ShieldCheck, AlertTriangle, TrendingUp, TrendingDown,
-  Clock, CheckCircle2, XCircle, Ban, Search, FileQuestion, Loader2,
+  Clock, CheckCircle2, XCircle, FileQuestion, Loader2,
   ExternalLink, Activity
 } from 'lucide-react';
 import {
@@ -47,14 +47,14 @@ interface Alert {
 }
 
 const Dashboard: React.FC = () => {
-  const { t } = useLanguage();
+  // const { t } = useLanguage();
   const [kpis, setKpis] = useState<KPIs | null>(null);
   const [health, setHealth] = useState<ServiceHealth | null>(null);
   const [serviceHealth, setServiceHealth] = useState<any[]>([]);
-  const [alerts, setAlerts] = useState<Alert[]>([]);
-  const [chartView, setChartView] = useState<'date' | 'country'>('date');
+  // const [alerts, setAlerts] = useState<Alert[]>([]);
+  const [chartView] = useState<'date' | 'country'>('date');
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  // const [error, setError] = useState('');
 
   useEffect(() => {
     fetchData();
@@ -72,11 +72,11 @@ const Dashboard: React.FC = () => {
       
       setKpis(kpisRes.data);
       setHealth(healthRes.data);
-      setAlerts(alertsRes.data);
+      // setAlerts(alertsRes.data);
       setServiceHealth(serviceRes.data);
     } catch (err) {
       console.error('Failed to fetch dashboard data:', err);
-      setError('Failed to load dashboard data');
+      // setError('Failed to load dashboard data');
     } finally {
       setLoading(false);
     }
@@ -425,7 +425,7 @@ const generateCountryData = (kpis: KPIs | null) => {
   }
 
   // Distribute real data based on actual KPIs
-  const totalCustomers = kpis.totalCustomers;
+  // const totalCustomers = kpis.totalCustomers;
   const activeCustomers = kpis.activeCustomers;
   const failedTransactions = kpis.failedTransactions;
 

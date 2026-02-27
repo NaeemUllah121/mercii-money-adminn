@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { integrationResultsAPI } from '../services/api';
-import { useLanguage } from '../context/LanguageContext';
 import {
-  CheckCircle2, XCircle, Clock, AlertTriangle, RefreshCw, ExternalLink,
-  Eye, FileText, Activity, Globe, Shield, CreditCard, Users
+  CheckCircle2, XCircle, Clock, AlertTriangle, RefreshCw, Globe
 } from 'lucide-react';
 
 interface IntegrationResult {
@@ -58,6 +56,7 @@ const IntegrationResults: React.FC = () => {
   }, [activeTab]);
 
   // Listen for custom event from sidebar
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     const handleTabChange = (event: CustomEvent) => {
       const tab = event.detail as any;

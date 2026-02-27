@@ -1,5 +1,0 @@
-{
-  "buildCommand": "cd mercii-admin && npm run build",
-  "outputDirectory": "mercii-admin/build",
-  "installCommand": "cd mercii-admin && npm install"
-}

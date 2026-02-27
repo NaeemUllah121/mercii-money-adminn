@@ -13,7 +13,7 @@ const TopBar: React.FC<TopBarProps> = ({ onMenuToggle, pageTitle }) => {
   const { user } = useAuth();
   const { t, currentLang, setLanguage } = useLanguage();
   const [searchQuery, setSearchQuery] = useState('');
-  const [searchResults, setSearchResults] = useState<any[]>([]);
+  // const [searchResults, setSearchResults] = useState<any[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [showLangDropdown, setShowLangDropdown] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
@@ -37,10 +37,12 @@ const TopBar: React.FC<TopBarProps> = ({ onMenuToggle, pageTitle }) => {
   ];
 
   // Initialize filtered languages
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     setFilteredLanguages(languages);
   }, []);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     fetchNotifications();
   }, []);
@@ -68,7 +70,7 @@ const TopBar: React.FC<TopBarProps> = ({ onMenuToggle, pageTitle }) => {
   const handleSearch = async (query: string) => {
     setSearchQuery(query);
     if (query.length < 2) {
-      setSearchResults([]);
+      // setSearchResults([]);
       return;
     }
 
@@ -95,10 +97,10 @@ const TopBar: React.FC<TopBarProps> = ({ onMenuToggle, pageTitle }) => {
         })) || []
       ];
 
-      setSearchResults(searchResults);
+      // setSearchResults(searchResults);
     } catch (error) {
       console.error('Search failed:', error);
-      setSearchResults([]);
+      // setSearchResults([]);
     } finally {
       setIsSearching(false);
     }

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { complianceAPI } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import {
-  Search, ChevronLeft, ChevronRight, Loader2, CheckCircle2, XCircle,
+  ChevronLeft, ChevronRight, Loader2, CheckCircle2, XCircle,
   AlertTriangle, FileQuestion, Clock
 } from 'lucide-react';
 

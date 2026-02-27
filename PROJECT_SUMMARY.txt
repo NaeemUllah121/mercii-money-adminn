@@ -1,0 +1,319 @@
+================================================================================
+                    MERCII ADMIN PANEL - COMPLETE PROJECT SUMMARY
+================================================================================
+
+Date: February 25, 2026
+Project: Mercii Remittance Admin Panel (Backend + Frontend)
+
+============================================Y
+================================================================================
+                              BACKEND SUMMAR====================================
+
+Location: Mercii-Backend/
+Stack: Node.js, Express.js, Sequelize ORM, PostgreSQL
+
+--- NEW FILES CREATED ---
+
+1. src/models/adminUser.js
+   - Admin user model with UUID primary key
+   - Roles: admin, mlro, support, viewer
+   - Password hashing with bcrypt (12 salt rounds)
+   - MFA support (TOTP via speakeasy)
+   - RBAC permission system per role
+   - PII masking (maskedEmail getter)
+   - Account lockout after 5 failed attempts (30 min)
+   - IP allowlisting support
+
+2. src/models/auditLog.js
+   - Immutable audit log model (5+ year retention)
+   - Actions: CREATE, READ, UPDATE, DELETE, LOGIN, LOGOUT, LOGIN_FAILED,
+     SUSPEND_CUSTOMER, UNSUSPEND_CUSTOMER, APPROVE_MLRO, REJECT_MLRO,
+     HOLD_MLRO, REFUND_TRANSACTION, CANCEL_TRANSACTION, RESEND_KYC,
+     ADJUST_LIMITS, EXPORT_DATA, VIEW_PII, MANAGE_ADMIN, SYSTEM_CHANGE,
+     SECURITY_ALERT
+   - Resources: USER, TRANSACTION, BENEFICIARY, KYC, MLRO_FLAG, ADMIN_USER,
+     SYSTEM, AUDIT_LOG
+   - Severity levels: low, medium, high, critical
+   - Compliance relevant flagging
+   - Static logAction method for easy logging
+
+3. src/models/adminSession.js
+   - Session management with JWT tokens
+   - Session expiry tracking
+   - IP address and user agent tracking
+   - MFA verification status per session
+   - Logout reason tracking (manual, timeout, forced, security)
+
+4. src/controllers/adminAuth.js
+   - Login with password validation + MFA
+   - JWT token generation using JWT_SECRET_KEY from .env
+   - Session creation on login
+   - Account lockout handling
+   - MFA enable/verify/disable flow with QR code generation
+   - Profile retrieval with masked PII
+   - Password change with audit logging
+   - All actions logged to AuditLog
+
+5. src/controllers/adminCustomer.js
+   - Customer profile with full details + PII masking
+   - Adjust transfer limits with audit trail
+   - Customer transaction history
+   - Beneficiary management (verify/suspend/unsuspend)
+   - AML rescreen trigger with audit logging
+
+6. src/controllers/adminOperations.js
+   - Reconciliation report: REAL data from transactions table
+     * Daily transaction counts, amounts (GBP + PKR)
+     * Success rates calculated from actual data
+     * Real variance detection: failed tx, cancelled tx, unsent to provider,
+       high-value transactions
+   - Webhook status: REAL data from transactions with USI payment IDs
+     * Delivered/failed/pending counts from actual transaction statuses
+     * Webhook endpoint from WEB_HOOK_URL env var
+   - Background jobs: REAL data from database
+     * AML rescreens from audit logs
+     * Stale pending transactions (>48h)
+     * Failed transaction notification counts
+     * Last reconciliation run from audit logs
+     * Pending KYC verification counts
+   - Retry webhook: Actually resets failed transaction to pending
+   - Resolve variance: Logged with compliance-relevant audit entry
+   - System metrics: Real counts from DB with timeframe filtering
+
+7. src/middlewares/adminAuth.js
+   - JWT verification using JWT_SECRET_KEY from .env
+   - Session validation (active + not expired)
+   - IP allowlisting enforcement
+   - requirePermission middleware (RBAC)
+   - requireRole middleware
+   - auditAction middleware (auto-logs successful API calls)
+
+8. src/routes/admin.js (updated)
+   - All endpoints protected with adminAuth middleware
+   - Permission checks per endpoint
+   - Audit logging on write operations
+
+9. src/routes/adminAuth.js
+   - POST /login (public)
+   - POST /logout (protected)
+   - GET /profile (protected)
+   - POST /change-password (protected)
+   - POST /mfa/enable (protected)
+   - POST /mfa/verify (protected)
+   - POST /mfa/disable (protected)
+
+10. src/services/businessRules.js
+    - Monthly cap validation: <= £5,000 per user per anchor day cycle (UK local)
+    - Anchor day: day of month user registered
+    - Bonus eligibility: transfer #4 (+500 PKR), #8 (+700 PKR), #12 (+1000 PKR)
+      * Only if amount >= £85
+      * Beneficiary must be non-RDA
+      * 24h gap to same beneficiary (bonus check only)
+    - RDA transfers allowed but excluded from bonus count
+    - Cycle resets on next anchor day after #12
+    - Remitter must be >= 18 years old
+
+11. src/migrations/
+    - 20240101000001-create-admin-users.js: AdminUsers table with indexes
+    - 20240101000002-create-audit-logs.js: AuditLogs table with indexes
+    - 20240101000003-create-admin-sessions.js: AdminSessions table with indexes
+
+12. src/seeders/20240101000001-create-default-admin.js
+    Default accounts created:
+    - admin / Admin123!@#  (role: admin)
+    - mlro  / MLRO123!@#   (role: mlro)
+    - support / Support123!@# (role: support)
+    - viewer / Viewer123!@#  (role: viewer)
+
+--- FILES MODIFIED ---
+
+1. src/app.js
+   - Added admin and adminAuth route mounting
+   - Fixed admin route mounting (function pattern)
+
+2. src/utils/constants.js
+   - Added AdminUsers, AuditLogs, AdminSessions to TABLES
+   - Added AdminUser, AuditLog, AdminSession to MODELS
+
+3. src/controllers/admin.js (heavily updated)
+   - getOverviewKPIs: ALL REAL DATA from Users, Transactions, KycRequests,
+     MLROFlags tables with trend calculation vs previous month
+   - getServiceHealth: ALL REAL health checks
+     * Database: actual sequelize.authenticate() with response time
+     * USI API: real HTTP ping to USI_BASE_URL
+     * SendGrid: real HTTP ping to status.sendgrid.com
+     * Twilio: real HTTP ping to status.twilio.com
+     * Shufti Pro: real HTTP ping to SHUFTI_URL
+     * Dilisense: real HTTP ping to DILISENSE_URL
+   - getAlerts: REAL data from MLROFlags + AuditLogs (last 24h)
+   - getCustomers: REAL data with PII masking, includes beneficiaries + KYC
+   - anchorDay: derived from user's actual registration date (not hardcoded)
+   - getTransactions: REAL data with user + beneficiary includes
+   - getMLROFlags: REAL data with filters
+   - All action endpoints: REAL DB updates + audit logging
+
+4. package.json
+   - Added: speakeasy (MFA/TOTP), qrcode (QR generation)
+
+--- ZERO DUMMY/HARDCODED DATA REMAINING ---
+All data comes from the PostgreSQL database via Sequelize queries.
+Service health checks ping actual third-party APIs configured in .env.
+
+================================================================================
+                              FRONTEND SUMMARY
+================================================================================
+
+Location: mercii-admin/
+Stack: React 18, TypeScript, TailwindCSS, Recharts, Axios, React Router v6
+
+--- PROJECT STRUCTURE ---
+
+mercii-admin/
+  package.json          - Dependencies and scripts
+  tsconfig.json         - TypeScript configuration
+  tailwind.config.js    - TailwindCSS with custom sidebar colors
+  postcss.config.js     - PostCSS configuration
+  .env                  - API URL (http://localhost:3001/api/v1), PORT=3000
+  public/index.html     - HTML entry point
+  src/
+    index.tsx           - React entry point
+    index.css           - TailwindCSS imports + custom animations
+    App.tsx             - Router setup with protected routes
+    react-app-env.d.ts  - TypeScript env types
+    context/
+      AuthContext.tsx    - Auth state management (login/logout/token)
+    services/
+      api.ts            - Axios instance with interceptors + all API functions
+    components/
+      Sidebar.tsx       - Collapsible sidebar with smooth animations
+      TopBar.tsx        - Header with search, notifications, user info
+      Layout.tsx        - Main layout (sidebar + topbar + outlet)
+    pages/
+      Login.tsx         - Dark themed login with MFA support
+      Dashboard.tsx     - KPI cards, services table, chart (all from API)
+      Customers.tsx     - Customer table with search/filters/actions
+      Transactions.tsx  - Transaction table with refund/cancel
+      Compliance.tsx    - MLRO flags with approve/reject modal
+      Operations.tsx    - Reconciliation, webhooks, background jobs tabs
+      Analytics.tsx     - Charts (bar, pie, area) from real metrics API
+      Reports.tsx       - Report type listing (static UI)
+      Support.tsx       - Support links (static UI)
+      Settings.tsx      - Profile info, password change, MFA status
+
+--- KEY FEATURES ---
+
+1. Sidebar Toggle
+   - Hamburger icon in TopBar toggles sidebar open/close
+   - ChevronLeft button in sidebar also toggles
+   - Smooth CSS transition (0.3s cubic-bezier)
+   - Collapsed: 80px width with icon tooltips on hover
+   - Expanded: 256px width with full labels
+   - Active route indicator (blue left border)
+
+2. Animations
+   - fadeIn: 0.4s ease-out for page content
+   - slideInLeft: 0.3s for sidebar items
+   - card-animate: staggered delays (0.05s per card)
+   - progressFill: animated progress bars
+   - pulse-dot: notification indicator
+   - Smooth transitions on all hover states
+
+3. Real Data (NO DUMMY DATA)
+   - All pages fetch from backend API via axios
+   - Dashboard: KPIs, health checks, alerts from /admin/overview/*
+   - Customers: paginated list from /admin/customers
+   - Transactions: paginated list from /admin/transactions/search
+   - Compliance: MLRO flags from /admin/compliance/mlro-flags
+   - Operations: reconciliation, webhooks, jobs from /admin/operations/*
+   - Analytics: metrics from /admin/overview/metrics + /admin/overview/kpis
+   - Chart data: deterministic distribution of actual totals (no Math.random)
+
+4. Authentication
+   - JWT token stored in localStorage
+   - Auto-redirect to /login on 401
+   - Protected routes via AuthContext
+   - MFA token input shown when backend requests it
+
+5. PII Masking
+   - Email and phone masked for non-privileged roles
+   - Full data shown only for roles with view_pii permission
+
+================================================================================
+                              RUNNING THE PROJECT
+================================================================================
+
+Backend (port 3001):
+  cd Mercii-Backend
+  $env:PORT='3001'; node src/bin/www
+
+Frontend (port 3000):
+  cd mercii-admin
+  npm start
+
+Database setup (one-time):
+  cd Mercii-Backend
+  npx sequelize-cli db:migrate
+  npx sequelize-cli db:seed --seed 20240101000001-create-default-admin.js
+
+================================================================================
+                              RBAC PERMISSIONS
+================================================================================
+
+Admin:   read, write, delete, manage_users, manage_system, approve_mlro, view_pii
+MLRO:    read, write, approve_mlro, view_pii
+Support: read, write, suspend_customers, resend_kyc
+Viewer:  read
+
+================================================================================
+                              API ENDPOINTS
+================================================================================
+
+Auth (public):
+  POST /api/v1/admin/auth/login
+
+Auth (protected):
+  POST /api/v1/admin/auth/logout
+  GET  /api/v1/admin/auth/profile
+  POST /api/v1/admin/auth/change-password
+  POST /api/v1/admin/auth/mfa/enable
+  POST /api/v1/admin/auth/mfa/verify
+  POST /api/v1/admin/auth/mfa/disable
+
+Overview:
+  GET  /api/v1/admin/overview/kpis
+  GET  /api/v1/admin/overview/health
+  GET  /api/v1/admin/overview/alerts
+  GET  /api/v1/admin/overview/metrics
+
+Customers:
+  GET  /api/v1/admin/customers
+  GET  /api/v1/admin/customers/:id
+  GET  /api/v1/admin/customers/:id/transactions
+  POST /api/v1/admin/customers/:id/suspend
+  POST /api/v1/admin/customers/:id/unsuspend
+  POST /api/v1/admin/customers/:id/resend-kyc
+  POST /api/v1/admin/customers/:id/adjust-limits
+  POST /api/v1/admin/customers/:id/aml-rescreen
+
+Transactions:
+  GET  /api/v1/admin/transactions/search
+  POST /api/v1/admin/transactions/:id/refund
+  POST /api/v1/admin/transactions/:id/cancel
+
+Compliance:
+  GET  /api/v1/admin/compliance/mlro-flags
+  POST /api/v1/admin/compliance/mlro-flags/:id/approve
+  POST /api/v1/admin/compliance/mlro-flags/:id/reject
+  POST /api/v1/admin/compliance/mlro-flags/:id/hold
+
+Operations:
+  GET  /api/v1/admin/operations/reconciliation
+  GET  /api/v1/admin/operations/reconciliation/export   (CSV download)
+  GET  /api/v1/admin/operations/webhooks
+  GET  /api/v1/admin/operations/jobs
+  POST /api/v1/admin/operations/webhooks/:id/retry
+  POST /api/v1/admin/operations/variances/:id/resolve
+
+================================================================================
+                              END OF SUMMARY
+================================================================================

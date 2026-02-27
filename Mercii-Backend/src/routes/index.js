@@ -1,0 +1,21 @@
+const userRoutes = require("./user");
+const kycRoutes = require("./kyc");
+const screeningRoutes = require("./screening");
+const fcmRoutes = require("./fcm");
+const usiRoutes = require("./usi");
+const transactionRoutes = require("./transaction");
+const benicifaryRoutes = require("./benificary");
+const ratesRoutes = require("./rates");
+const adminRoutes = require("./admin");
+module.exports = (router) => {
+    userRoutes(router);
+    kycRoutes(router);
+    screeningRoutes(router);
+    fcmRoutes(router);
+    usiRoutes(router);
+    transactionRoutes(router);
+    benicifaryRoutes(router);
+    ratesRoutes(router);
+    adminRoutes(router);
+    return router;
+};

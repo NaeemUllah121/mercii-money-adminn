@@ -1,0 +1,44 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "src/bin/www",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "mercii-admin/package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "build"
+      }
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "src/bin/www"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/mercii-admin/build/$1"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "src/bin/www"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/mercii-admin/build/$1"
+    }
+  ],
+  "env": {
+    "NODE_ENV": "production"
+  },
+  "functions": {
+    "src/bin/www.js": {
+      "maxDuration": 30
+    }
+  }
+}

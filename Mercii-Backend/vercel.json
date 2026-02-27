@@ -4,20 +4,6 @@
     {
       "source": "/api/(.*)",
       "destination": "src/bin/www"
-    },
-    {
-      "source": "/(.*)",
-      "destination": "/mercii-admin/build/$1"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "src/bin/www"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/mercii-admin/build/$1"
     }
   ],
   "env": {

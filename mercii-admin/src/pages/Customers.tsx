@@ -36,6 +36,12 @@ const Customers: React.FC = () => {
   // Check if user has access to customer management
   const hasCustomerAccess = user?.role === 'admin' || user?.role === 'support';
 
+  useEffect(() => {
+    if (hasCustomerAccess) {
+      fetchCustomers();
+    }
+  }, [page, statusFilter, kycFilter, hasCustomerAccess]);
+
   // If MLRO role, show access denied message
   if (user?.role === 'mlro') {
     return (
@@ -48,10 +54,6 @@ const Customers: React.FC = () => {
       </div>
     );
   }
-
-  useEffect(() => {
-    fetchCustomers();
-  }, [page, statusFilter, kycFilter]);
 
   const fetchCustomers = async () => {
     setLoading(true);

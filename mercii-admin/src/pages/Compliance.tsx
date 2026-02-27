@@ -30,9 +30,18 @@ const Compliance: React.FC = () => {
   const [severityFilter, setSeverityFilter] = useState('');
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [actionLoading, setActionLoading] = useState<string | null>(null);
+  const [notesModal, setNotesModal] = useState<{ id: string; action: string } | null>(null);
+  const [notes, setNotes] = useState('');
 
   // Check if user has access to compliance
   const hasComplianceAccess = user?.role === 'admin' || user?.role === 'mlro';
+
+  useEffect(() => { 
+    if (hasComplianceAccess) {
+      fetchFlags(); 
+    }
+  }, [page, statusFilter, severityFilter, hasComplianceAccess]);
 
   // If Support role, show access denied message
   if (user?.role === 'support') {
@@ -46,11 +55,6 @@ const Compliance: React.FC = () => {
       </div>
     );
   }
-  const [actionLoading, setActionLoading] = useState<string | null>(null);
-  const [notesModal, setNotesModal] = useState<{ id: string; action: string } | null>(null);
-  const [notes, setNotes] = useState('');
-
-  useEffect(() => { fetchFlags(); }, [page, statusFilter, severityFilter]);
 
   const fetchFlags = async () => {
     setLoading(true);

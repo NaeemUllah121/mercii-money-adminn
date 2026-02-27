@@ -4,3 +4,4 @@ src/uploads/
 package-lock.json
 /logs/*
 /public/
+src/config/firebaseCreds.json

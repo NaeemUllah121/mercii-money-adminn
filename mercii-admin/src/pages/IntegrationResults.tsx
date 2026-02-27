@@ -48,11 +48,11 @@ interface Webhook {
 }
 
 const IntegrationResults: React.FC = () => {
-  const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState<'kyc' | 'aml' | 'payments' | 'payouts' | 'jobs' | 'webhooks'>('kyc');
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     fetchData();
   }, [activeTab]);

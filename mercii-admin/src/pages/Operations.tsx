@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { operationsAPI } from '../services/api';
 import {
-  Loader2, RefreshCw, CheckCircle2, XCircle, AlertTriangle,
-  Clock, FileQuestion, Activity, Webhook, Cog, Download
+  Loader2, RefreshCw, AlertTriangle,
+  FileQuestion, Activity, Webhook, Cog, Download
 } from 'lucide-react';
 
 const Operations: React.FC = () => {

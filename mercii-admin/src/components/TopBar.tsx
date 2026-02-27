@@ -82,20 +82,20 @@ const TopBar: React.FC<TopBarProps> = ({ onMenuToggle, pageTitle }) => {
         transactionAPI.getTransactions({ search: query, limit: 5 })
       ]);
 
-      const searchResults = [
-        ...customersResponse.data.customers?.map((customer: any) => ({
-          type: 'customer',
-          name: customer.fullName,
-          email: customer.email,
-          id: customer.id
-        })) || [],
-        ...transactionsResponse.data.transactions?.map((transaction: any) => ({
-          type: 'transaction',
-          ref: transaction.referenceNumber,
-          amount: `£${transaction.amount}`,
-          customer: transaction.customer?.fullName || 'Unknown'
-        })) || []
-      ];
+      // const searchResults = [
+      //   ...customersResponse.data.customers?.map((customer: any) => ({
+      //     type: 'customer',
+      //     name: customer.fullName,
+      //     email: customer.email,
+      //     id: customer.id
+      //   })) || [],
+      //   ...transactionsResponse.data.transactions?.map((transaction: any) => ({
+      //     type: 'transaction',
+      //     ref: transaction.referenceNumber,
+      //     amount: `£${transaction.amount}`,
+      //     customer: transaction.customer?.fullName || 'Unknown'
+      //   })) || []
+      // ];
 
       // setSearchResults(searchResults);
     } catch (error) {

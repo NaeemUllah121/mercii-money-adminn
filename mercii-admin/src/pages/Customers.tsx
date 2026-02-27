@@ -36,7 +36,8 @@ const Customers: React.FC = () => {
   // Check if user has access to customer management
   const hasCustomerAccess = user?.role === 'admin' || user?.role === 'support';
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  // eslint-disabl
+  // e-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (hasCustomerAccess) {
       fetchCustomers();
